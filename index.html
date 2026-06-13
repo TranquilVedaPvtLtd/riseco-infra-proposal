@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="A working plan for Riseco Infra: secure the app you built, add the features you need, and put a WhatsApp assistant on top that hands you the business every morning.">
+<meta name="data-published" content="2026-06-13">
+<title>Riseco Infra - Secure it, extend it, and let it brief you at 6 AM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0A1628; --primary-light:#152238; --primary-dark:#060E1A;
+    --accent:#00C853; --accent-bright:#00E676; --accent-dark:#009624;
+    --gold:#FFD700; --gold-soft:#F4C95D; --red:#FF1744;
+    --bg:#FFFFFF; --bg-alt:#F8FAFC;
+    --text:#0A1628; --text-soft:#475569; --text-mute:#94A3B8; --border:#E2E8F0;
+    --wa-bg:#0B141A; --wa-panel:#111B21; --wa-in:#202C33; --wa-out:#005C4B; --wa-head:#1F2C34;
+    --shadow:0 10px 40px rgba(10,22,40,.08); --shadow-lg:0 24px 70px rgba(10,22,40,.16);
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--text);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .container{max-width:1120px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{letter-spacing:-.02em;line-height:1.1;font-weight:800}
+  h2{font-size:clamp(1.7rem,4vw,2.7rem);margin-bottom:14px}
+  h3{font-size:1.25rem;font-weight:700;letter-spacing:-.01em}
+  p{color:var(--text-soft)}
+  .accent{color:var(--accent)}
+  .gold{color:var(--gold-soft)}
+  .label{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--accent-dark)}
+  a{color:inherit}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+
+  /* ===== HERO ===== */
+  .hero{position:relative;min-height:100vh;display:flex;align-items:center;background:radial-gradient(1200px 700px at 75% 10%,#16314a 0%,var(--primary) 45%,var(--primary-dark) 100%);color:#fff;overflow:hidden}
+  #constellation{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+  .hero .container{position:relative;z-index:2;padding-top:88px;padding-bottom:64px}
+  .badge{display:inline-flex;align-items:center;gap:9px;font-size:.78rem;font-weight:600;letter-spacing:.02em;background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.32);color:var(--accent-bright);padding:8px 16px;border-radius:100px;margin-bottom:26px}
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent-bright);box-shadow:0 0 12px var(--accent-bright);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .hero h1{font-size:clamp(2.3rem,6.2vw,4.5rem);font-weight:900;color:#fff;margin-bottom:22px;max-width:16ch}
+  .hero .subtitle{font-size:clamp(1.05rem,2.1vw,1.35rem);color:#aebfce;max-width:60ch;font-weight:400;margin-bottom:30px}
+  .price-anchor{display:inline-block;font-size:1.05rem;color:#fff;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);padding:12px 22px;border-radius:14px;margin-bottom:34px}
+  .price-anchor strong{color:var(--gold-soft);font-weight:800}
+  .hero-cta-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+  .cta-primary{display:inline-flex;align-items:center;gap:11px;background:var(--accent);color:#04130b;font-weight:800;font-size:1.02rem;padding:16px 30px;border-radius:13px;text-decoration:none;box-shadow:0 14px 38px rgba(0,200,83,.34);transition:transform .25s,box-shadow .25s}
+  .cta-primary:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(0,200,83,.48)}
+  .cta-primary svg{width:22px;height:22px}
+  .hero-person{display:flex;align-items:center;gap:13px;color:#cdd9e6}
+  .hero-person .av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0a7a52);display:flex;align-items:center;justify-content:center;font-weight:800;color:#04130b;font-size:1.05rem;border:2px solid rgba(255,255,255,.25)}
+  .hero-person small{display:block;color:var(--text-mute);font-size:.8rem}
+  .hero-scroll{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;color:#7f93a8;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .hero-scroll .m{width:24px;height:38px;border:2px solid #44586b;border-radius:14px;position:relative}
+  .hero-scroll .m::after{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);width:4px;height:8px;border-radius:3px;background:var(--accent-bright);animation:scrolly 1.7s infinite}
+  @keyframes scrolly{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,12px)}}
+
+  /* ===== BLOCKS ===== */
+  .block{padding:96px 0;position:relative}
+  .block.alt{background:var(--bg-alt)}
+  .block.dark{background:var(--primary);color:#fff}
+  .block.dark p{color:#aebfce}
+  .block.dark h2{color:#fff}
+  .sec-head{max-width:62ch;margin-bottom:48px}
+  .sec-head p.lead{font-size:1.12rem;margin-top:10px}
+
+  /* context cards */
+  .ctx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:20px;margin-top:14px}
+  .ctx-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+  .ctx-card .ic{width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .ctx-card .ic svg{width:25px;height:25px}
+  .ic.green{background:rgba(0,200,83,.12);color:var(--accent-dark)}
+  .ic.gold{background:rgba(244,201,93,.18);color:#a8801f}
+  .ic.red{background:rgba(255,23,68,.1);color:var(--red)}
+  .ic.blue{background:rgba(21,34,56,.08);color:var(--primary)}
+  .ctx-card h3{margin-bottom:8px}
+  .ctx-card p{font-size:.97rem}
+  .quote-strip{margin-top:34px;border-left:4px solid var(--accent);background:rgba(0,200,83,.05);padding:20px 26px;border-radius:0 14px 14px 0;font-size:1.12rem;color:var(--text);font-weight:500;font-style:italic}
+  .inaction{margin-top:30px;display:flex;align-items:flex-start;gap:14px;background:rgba(255,23,68,.05);border:1px solid rgba(255,23,68,.18);border-radius:14px;padding:20px 24px}
+  .inaction svg{width:24px;height:24px;color:var(--red);flex-shrink:0;margin-top:3px}
+  .inaction b{color:var(--text)}
+
+  /* scope table */
+  .scope-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:8px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  .scope-table thead th{background:var(--primary);color:#fff;text-align:left;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;padding:16px 22px;font-weight:700}
+  .scope-table td{padding:20px 22px;border-top:1px solid var(--border);vertical-align:top;font-size:.97rem}
+  .scope-table tr td:first-child{font-weight:700;color:var(--text);width:42%}
+  .scope-table .wnum{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;background:rgba(0,200,83,.13);color:var(--accent-dark);font-weight:800;font-size:.82rem;margin-right:10px}
+  .scope-table td small{display:block;color:var(--text-mute);font-weight:400;margin-top:5px;font-size:.84rem}
+  .scope-table td:last-child{color:var(--text-soft)}
+
+  /* WhatsApp demo */
+  .demo-band{margin-top:64px;background:linear-gradient(160deg,#0c1c2c,#0a1628 60%,#060e1a);border-radius:26px;padding:54px 30px;color:#fff;position:relative;overflow:hidden}
+  .demo-band::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.16),transparent 70%);top:-180px;right:-120px}
+  .demo-wrap{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;max-width:1000px;margin:0 auto}
+  .demo-copy .label{color:var(--accent-bright)}
+  .demo-copy h2{color:#fff;margin:12px 0 16px}
+  .demo-copy p{color:#aebfce;font-size:1.05rem}
+  .demo-list{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:14px}
+  .demo-list li{display:flex;gap:12px;align-items:flex-start;color:#cdd9e6;font-size:.97rem}
+  .demo-list svg{width:21px;height:21px;color:var(--accent-bright);flex-shrink:0;margin-top:2px}
+  .demo-hint{margin-top:24px;font-size:.85rem;color:var(--accent-bright);display:flex;align-items:center;gap:8px}
+  .demo-hint svg{width:18px;height:18px}
+
+  /* phone */
+  .phone{width:330px;max-width:100%;margin:0 auto;background:#000;border-radius:42px;padding:11px;box-shadow:0 40px 90px rgba(0,0,0,.5);border:1px solid #2a3a49}
+  .phone-screen{background:var(--wa-bg);border-radius:32px;overflow:hidden;height:620px;display:flex;flex-direction:column;position:relative;background-image:linear-gradient(rgba(11,20,26,.96),rgba(11,20,26,.96)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0 20h40M20 0v40' stroke='%23ffffff08' stroke-width='1'/%3E%3C/svg%3E")}
+  .wa-head{background:var(--wa-head);padding:14px 14px;display:flex;align-items:center;gap:11px;flex-shrink:0}
+  .wa-head .back{color:#8696a0}
+  .wa-head .pic{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0a7a52);display:flex;align-items:center;justify-content:center;font-weight:800;color:#04130b;font-size:.95rem}
+  .wa-head .who{flex:1;min-width:0}
+  .wa-head .who b{color:#e9edef;font-size:.95rem;font-weight:600;display:block}
+  .wa-head .who small{color:#8696a0;font-size:.74rem}
+  .wa-head svg{width:20px;height:20px;color:#8696a0}
+  .wa-body{flex:1;overflow-y:auto;padding:16px 12px 6px;display:flex;flex-direction:column;gap:9px;scroll-behavior:smooth}
+  .wa-body::-webkit-scrollbar{width:5px}.wa-body::-webkit-scrollbar-thumb{background:#2a3a49;border-radius:4px}
+  .bub{max-width:84%;padding:8px 11px 7px;border-radius:11px;font-size:.86rem;line-height:1.5;color:#e9edef;position:relative;word-wrap:break-word;box-shadow:0 1px 1px rgba(0,0,0,.2)}
+  .bub.in{background:var(--wa-in);align-self:flex-start;border-top-left-radius:3px}
+  .bub.out{background:var(--wa-out);align-self:flex-end;border-top-right-radius:3px}
+  .bub .t{font-size:.62rem;color:#ffffff66;float:right;margin:6px 0 -2px 10px}
+  .bub b{color:#fff}
+  .bub .mini{margin-top:8px;background:#ffffff10;border-radius:8px;padding:9px 10px;font-size:.79rem}
+  .bub .row{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid #ffffff12}
+  .bub .row:last-child{border-bottom:0}
+  .bub .row .v{font-weight:700;color:#fff}
+  .bub .v.ok{color:#7ee2b8}.bub .v.warn{color:#ffd97a}.bub .v.bad{color:#ff8a9c}
+  .bub .flag{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:rgba(255,23,68,.16);color:#ff9eae;border-radius:7px;padding:5px 9px;font-size:.76rem;font-weight:600}
+  .bub .flag svg{width:14px;height:14px}
+  .typing{align-self:flex-start;background:var(--wa-in);border-radius:11px;border-top-left-radius:3px;padding:11px 14px;display:none}
+  .typing.show{display:flex;gap:4px}
+  .typing span{width:7px;height:7px;border-radius:50%;background:#8696a0;animation:td 1.2s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+  @keyframes td{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+  .wa-foot{flex-shrink:0;padding:9px 10px;background:var(--wa-bg);border-top:1px solid #1d2a32}
+  .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:9px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex-shrink:0;background:#202c33;color:#cfd9df;border:1px solid #2a3a49;border-radius:100px;padding:7px 13px;font-size:.76rem;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s}
+  .chip:hover{background:#2a3a49;border-color:var(--accent-dark)}
+  .wa-input{display:flex;align-items:center;gap:9px;background:#202c33;border-radius:22px;padding:7px 8px 7px 16px}
+  .wa-input input{flex:1;background:transparent;border:0;outline:0;color:#e9edef;font-size:.86rem;font-family:inherit}
+  .wa-input input::placeholder{color:#8696a0}
+  .wa-send{width:36px;height:36px;border-radius:50%;background:var(--accent);border:0;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+  .wa-send svg{width:18px;height:18px;color:#04130b}
+
+  /* pricing */
+  .pricing-wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:26px;margin-top:18px}
+  .price-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow)}
+  .price-card.feature{background:linear-gradient(165deg,var(--primary),var(--primary-dark));color:#fff;border:0;position:relative;overflow:hidden}
+  .price-card.feature::after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.18),transparent 70%);bottom:-130px;left:-80px}
+  .price-card.feature h3{color:#fff}
+  .price-line{display:flex;justify-content:space-between;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--border)}
+  .price-card.feature .price-line{border-color:rgba(255,255,255,.12)}
+  .price-line:last-of-type{border-bottom:0}
+  .price-line .n{font-weight:600;font-size:.97rem}
+  .price-card.feature .price-line .n{color:#cdd9e6}
+  .price-line .amt{font-weight:800;font-size:1.4rem;letter-spacing:-.02em;position:relative;z-index:2}
+  .price-card.feature .amt{color:var(--gold-soft)}
+  .price-line small{display:block;font-size:.76rem;color:var(--text-mute);font-weight:500}
+  .price-card.feature small{color:#8ea1b5}
+  .why-price{background:rgba(0,200,83,.06);border:1px solid rgba(0,200,83,.2);border-radius:13px;padding:18px 20px;margin-top:22px;font-size:.92rem;color:var(--text-soft)}
+  .why-price b{color:var(--text)}
+  .not-incl{margin-top:22px}
+  .not-incl h3{font-size:1rem;margin-bottom:12px;color:var(--text)}
+  .not-incl ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .not-incl li{display:flex;gap:10px;font-size:.9rem;color:var(--text-soft)}
+  .not-incl svg{width:18px;height:18px;color:var(--text-mute);flex-shrink:0;margin-top:3px}
+  .validity{margin-top:18px;font-size:.84rem;color:var(--text-mute)}
+
+  /* e-sign */
+  .esign{margin-top:40px;background:var(--primary);border-radius:20px;padding:34px;color:#fff;display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:center}
+  .esign h3{color:#fff;font-size:1.4rem;margin-bottom:8px}
+  .esign p{color:#aebfce;font-size:.95rem}
+  .esign-fields{display:flex;flex-direction:column;gap:12px}
+  .esign-fields input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:11px;padding:13px 15px;color:#fff;font-family:inherit;font-size:.92rem;outline:0}
+  .esign-fields input::placeholder{color:#7f93a8}
+  .esign-fields input:focus{border-color:var(--accent)}
+  .esign-btn{background:var(--accent);color:#04130b;font-weight:800;border:0;border-radius:11px;padding:14px;font-size:1rem;cursor:pointer;font-family:inherit;transition:transform .2s}
+  .esign-btn:hover{transform:translateY(-2px)}
+  .esign-note{font-size:.78rem;color:#7f93a8;margin-top:4px}
+
+  /* generic grids */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px}
+  .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
+  .block.alt .panel{background:#fff}
+  .panel h3{margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .panel h3 svg{width:22px;height:22px;color:var(--accent-dark)}
+  .risk-row{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--border)}
+  .risk-row:last-child{border-bottom:0}
+  .risk-row .rq{flex-shrink:0;width:30px;height:30px;border-radius:9px;background:rgba(255,23,68,.1);color:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800}
+  .risk-row b{color:var(--text);display:block;font-size:.95rem}
+  .risk-row p{font-size:.88rem;margin-top:3px}
+  .crit-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+  .crit-list li{display:flex;gap:13px;align-items:flex-start}
+  .crit-list .ck{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(0,200,83,.13);display:flex;align-items:center;justify-content:center}
+  .crit-list .ck svg{width:15px;height:15px;color:var(--accent-dark)}
+  .crit-list b{color:var(--text);font-size:.95rem}
+  .crit-list span{display:block;color:var(--text-soft);font-size:.88rem}
+  .sow-link{display:inline-flex;align-items:center;gap:9px;margin-top:24px;color:var(--accent-dark);font-weight:700;text-decoration:none;font-size:.95rem;border-bottom:2px solid transparent;transition:border-color .2s;padding-bottom:2px}
+  .sow-link:hover{border-color:var(--accent-dark)}
+  .sow-link svg{width:18px;height:18px}
+
+  /* proof */
+  .proof-card{max-width:880px;margin:0 auto;background:#fff;border:1px solid var(--border);border-radius:24px;padding:46px;box-shadow:var(--shadow-lg);position:relative}
+  .proof-card .qmark{position:absolute;top:24px;right:34px;font-size:6rem;line-height:1;color:rgba(0,200,83,.1);font-weight:900;font-family:Georgia,serif}
+  .proof-tag{display:inline-block;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent-dark);background:rgba(0,200,83,.1);padding:6px 14px;border-radius:100px;margin-bottom:20px}
+  .proof-card h3{font-size:1.5rem;margin-bottom:16px;max-width:24ch}
+  .proof-card p{font-size:1.05rem;margin-bottom:16px}
+  .proof-points{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px;padding-top:28px;border-top:1px solid var(--border)}
+  .proof-points .pp svg{width:26px;height:26px;color:var(--accent-dark);margin-bottom:8px}
+  .proof-points .pp b{display:block;color:var(--text);font-size:.97rem;margin-bottom:3px}
+  .proof-points .pp span{font-size:.85rem;color:var(--text-soft)}
+
+  /* plan timeline */
+  .timeline{position:relative;margin-top:18px;padding-left:8px}
+  .tl-step{display:grid;grid-template-columns:140px 1fr;gap:22px;padding:20px 0;border-top:1px solid var(--border)}
+  .tl-step:first-child{border-top:0}
+  .tl-when{font-weight:800;color:var(--accent-dark);font-size:.95rem}
+  .tl-when small{display:block;color:var(--text-mute);font-weight:500;font-size:.78rem;margin-top:2px}
+  .tl-what b{color:var(--text);display:block;margin-bottom:4px}
+  .tl-what p{font-size:.92rem}
+  .own-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:18px}
+  .own-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow)}
+  .own-card svg{width:22px;height:22px;color:var(--accent-dark);flex-shrink:0;margin-top:2px}
+  .own-card b{display:block;color:var(--text);font-size:.93rem;margin-bottom:3px}
+  .own-card span{font-size:.84rem;color:var(--text-soft)}
+
+  /* stakeholder grid */
+  .stake-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:18px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  .stake-table th{background:var(--primary-light);color:#fff;text-align:left;padding:14px 18px;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase}
+  .stake-table td{padding:16px 18px;border-top:1px solid var(--border);font-size:.9rem;vertical-align:top}
+  .stake-table td:first-child{font-weight:700;color:var(--text);white-space:nowrap}
+  .stake-table a{color:var(--accent-dark);font-weight:600;text-decoration:none}
+
+  /* final cta */
+  .final-cta{text-align:center;max-width:680px;margin:0 auto}
+  .final-cta h2{color:#fff}
+  .final-cta p{color:#aebfce;font-size:1.1rem;margin:14px 0 32px}
+  .cta-row2{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
+  .cta-ghost{display:inline-flex;align-items:center;gap:10px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.28);font-weight:700;padding:16px 28px;border-radius:13px;text-decoration:none;transition:border-color .2s,background .2s}
+  .cta-ghost:hover{border-color:var(--accent);background:rgba(0,200,83,.08)}
+  .cta-ghost svg{width:20px;height:20px}
+
+  footer{background:var(--primary-dark);color:#7f93a8;padding:40px 0;font-size:.84rem;text-align:center}
+  footer .fl{color:#aebfce;font-weight:600;margin-bottom:6px}
+  footer .meta{font-size:.76rem;color:#56697c;margin-top:8px}
+
+  /* accordions */
+  details{background:#fff;border:1px solid var(--border);border-radius:13px;margin-top:12px;overflow:hidden}
+  .block.alt details{background:#fff}
+  details summary{cursor:pointer;padding:16px 20px;font-weight:600;font-size:.92rem;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  details summary::-webkit-details-marker{display:none}
+  details summary .pl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-dark);background:rgba(0,200,83,.1);padding:3px 9px;border-radius:6px}
+  details summary .chev{transition:transform .25s;color:var(--text-mute)}
+  details[open] summary .chev{transform:rotate(180deg)}
+  details .body{padding:0 20px 18px;font-size:.9rem;color:var(--text-soft)}
+  details .body ul{margin:6px 0 0 18px}
+  details .body li{margin-bottom:6px}
+
+  @media(max-width:900px){
+    .demo-wrap,.pricing-wrap,.two-col,.esign,.proof-points{grid-template-columns:1fr}
+    .esign{gap:20px}
+    .tl-step{grid-template-columns:1fr;gap:6px}
+    .scope-table tr td:first-child{width:auto}
+    .block{padding:70px 0}
+    .demo-band{padding:40px 18px}
+  }
+  @media(max-width:560px){
+    .scope-table,.scope-table tbody,.scope-table tr,.scope-table td{display:block;width:100%!important}
+    .scope-table thead{display:none}
+    .scope-table tr{border-top:1px solid var(--border)}
+    .scope-table td{border-top:0;padding:10px 18px}
+    .scope-table tr td:first-child{padding-top:18px}
+    .stake-table{font-size:.82rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="hero" data-section="hero">
+  <canvas id="constellation" aria-hidden="true"></canvas>
+  <div class="container">
+    <span class="badge"><span class="dot"></span>Prepared for Neeraj Varma - Riseco Infra Private Limited, Pune</span>
+    <h1>The app you built. Now <span class="accent">secured</span>, extended, and briefing you at 6 AM.</h1>
+    <p class="subtitle">You built your own site-cost system - indents, estimate-vs-actual, director flags, drawings, petty cash. It works. But it has never been security-checked, and it cannot talk to you. We fix the first and build the second: a WhatsApp assistant that hands you every site, every alert, and your day - before you reach the office.</p>
+    <div class="price-anchor">From <strong>&#8377;15,000/month</strong> + <strong>&#8377;3,00,000</strong> one-time build. Cloud and AI billed at cost on your own account.</div>
+    <div class="hero-cta-row">
+      <a class="cta-primary" href="https://wa.me/919673758777?text=Hi%20Shruti%2C%20I%20reviewed%20the%20Riseco%20Infra%20plan.%20Let%27s%20talk.">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 14.2c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1.1 2.8 1.2 3c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.1-1.3c1.4.8 3.1 1.3 4.9 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.8-3.1-.2-.3c-.9-1.4-1.3-2.9-1.3-4.5C3.4 7.3 7.3 3.4 12 3.4s8.6 3.9 8.6 8.6-3.9 8.2-8.6 8.2z"/></svg>
+        WhatsApp Shruti now
+      </a>
+      <div class="hero-person">
+        <div class="av">S</div>
+        <div><b style="color:#fff">Shruti</b><small>Your technology partner - +91 9673758777</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Scroll</span><span class="m"></span></div>
+</section>
+
+<!-- ===================== BLOCK 1: CONTEXT ===================== -->
+<section class="block" id="context" data-section="context">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="label">Where you are today</span>
+      <h2>You built something real. It just needs a guard and a voice.</h2>
+      <p class="lead">From our conversation, here is what you are actually dealing with - in your words, not ours.</p>
+    </div>
+    <div class="ctx-grid">
+      <div class="ctx-card reveal">
+        <div class="ic green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <h3>The system already works</h3>
+        <p>Raise an indent, it ties to the year and the estimate, and balances it. Go over budget and it flags the directors. Drawings and documents are timestamped on upload. Petty cash, sales and assets are in there too.</p>
+      </div>
+      <div class="ctx-card reveal d1">
+        <div class="ic red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L3 7v6c0 5 3.5 8 9 9 5.5-1 9-4 9-9V7z"/><path d="M12 8v4"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg></div>
+        <h3>It was never security-checked</h3>
+        <p>You built it fast with AI tools. That is a strength - but no one has audited who can see what, how logins are protected, or where data could leak. That is the part that keeps you up, and it should be handled before anything else is added.</p>
+      </div>
+      <div class="ctx-card reveal d2">
+        <div class="ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <h3>It cannot talk to you yet</h3>
+        <p>Right now you open the screen to know anything. You asked for the opposite: a 6 AM message with every site, every alert, and the few things you need to decide today - on WhatsApp, where you already are.</p>
+      </div>
+      <div class="ctx-card reveal d3">
+        <div class="ic blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+        <h3>No IT person to hand this to</h3>
+        <p>You are the product owner and the site runner. You need a partner who secures it, builds what is missing, keeps it running, and does not turn it into a heavy monthly bill you did not ask for.</p>
+      </div>
+    </div>
+
+    <div class="quote-strip reveal">"I do not want a big monthly commitment. A certain commitment for this particular work. My budget here is small - but if something good comes out of it, we will consider more."</div>
+
+    <div class="inaction reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+      <div><b>If nothing changes:</b> the app keeps holding your money and your drawings with security gaps no one has looked at, you keep opening screens to find out what is happening on each site, and a budget overrun can sit unseen until it is already a problem. The cost of waiting is not a bill - it is the one flag you find out about too late.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BLOCK 2: SCOPE + DEMO + PRICING ===================== -->
+<section class="block alt" id="scope" data-section="scope">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="label">What you get and what it costs</span>
+      <h2>Four pieces of work. One fixed price. No surprise monthly.</h2>
+      <p class="lead">We secure first, then build. Each line below is a real thing you can point at - not an idea.</p>
+    </div>
+
+    <table class="scope-table reveal">
+      <thead><tr><th>What we build for you</th><th>What it does for your business</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="wnum">1</span>Security audit and hardening<small>The priority. Done first, before anything new is added.</small></td>
+          <td>A full check of your app - who can log in, who can see what, where data is exposed - then we fix the gaps and lock down access by role (directors see everything, site staff see their site). You get the findings report and one free re-check after fixes.</td>
+        </tr>
+        <tr>
+          <td><span class="wnum">2</span>Feature build on your app<small>Sharpening what you already started.</small></td>
+          <td>Stronger estimate-vs-actual reconciliation, cleaner director flagging on overruns, better drawing and document handling with version history, and tidy-up of the petty cash, sales and assets screens. Exact list locked in week one with you.</td>
+        </tr>
+        <tr>
+          <td><span class="wnum">3</span>WhatsApp assistant: "Riseco Assistant"<small>The piece you asked for. Try it on the right.</small></td>
+          <td>Ask it anything and get the answer with the numbers pulled live from your app. Every morning at 6 AM it sends a brief on all sites, the open alerts, and your decisions for the day. Budget overruns and approvals are pushed the moment they happen. Built as a set of skills for how Riseco actually works.</td>
+        </tr>
+        <tr>
+          <td><span class="wnum">4</span>Hosting and go-live<small>Off the free tier, onto something solid.</small></td>
+          <td>We move the app to proper hosting, set up the server for the assistant, wire up backups and monitoring, and put it live. Set up on your own cloud account so the running cost stays yours and transparent.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ===== INTERACTIVE WHATSAPP DEMO ===== -->
+    <div class="demo-band reveal" id="demo">
+      <div class="demo-wrap">
+        <div class="demo-copy">
+          <span class="label">See it working</span>
+          <h2>Talk to Riseco Assistant.</h2>
+          <p>This is a working preview of the WhatsApp assistant. Tap a question below the chat, or type your own. It answers exactly the way the real one will, against your sites and your numbers.</p>
+          <ul class="demo-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b style="color:#fff">6 AM brief</b> - all sites, today's priorities, and open flags in one message.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg><span><b style="color:#fff">Instant alerts</b> - the second a cost crosses its estimate, you know.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span><b style="color:#fff">Just ask</b> - indent status, petty cash, site spend, in plain language.</span></li>
+          </ul>
+          <div class="demo-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Tap a suggestion under the chat to start</div>
+        </div>
+
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="wa-head">
+              <svg class="back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+              <div class="pic">RA</div>
+              <div class="who"><b>Riseco Assistant</b><small>online</small></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <div class="wa-body" id="waBody">
+              <div class="bub in">Good morning Neeraj. I am set up for Riseco Infra. Ask me anything, or tap a question below to see how I work.<span class="t">6:00 AM</span></div>
+            </div>
+            <div class="typing" id="typing"><span></span><span></span><span></span></div>
+            <div class="wa-foot">
+              <div class="chips" id="chips"></div>
+              <div class="wa-input">
+                <input id="waInput" type="text" placeholder="Type a message" autocomplete="off">
+                <button class="wa-send" id="waSend" aria-label="Send"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12L4 4v6l9 2-9 2v6z"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PRICING ===== -->
+    <div class="sec-head reveal" style="margin-top:72px;margin-bottom:24px">
+      <span class="label">The number</span>
+      <h2>One build cost. One small monthly. Your cloud bill stays yours.</h2>
+    </div>
+    <div class="pricing-wrap">
+      <div class="price-card reveal">
+        <div class="price-line">
+          <div class="n">One-time build<small>Security + features + WhatsApp assistant + go-live</small></div>
+          <div class="amt">&#8377;3,00,000</div>
+        </div>
+        <div class="price-line">
+          <div class="n">Monthly maintenance<small>Monitoring, fixes, small changes, keeping it live</small></div>
+          <div class="amt">&#8377;15,000<small style="text-align:right">per month</small></div>
+        </div>
+        <div class="price-line">
+          <div class="n">Cloud + AI usage<small>Hosting and the assistant's AI calls, billed at cost on your own account</small></div>
+          <div class="amt">&#8377;6k-12k<small style="text-align:right">per month, your bill</small></div>
+        </div>
+        <div class="why-price">
+          <b>Why this price.</b> The build covers a real security pass, feature work, and a custom WhatsApp assistant wired into your app - priced as one fixed job, not a monthly you did not ask for. The AI runs on cheaper models with caching, so the running bill stays in the low thousands, not lakhs, and it is on your account so you see every rupee.
+        </div>
+        <p class="validity">Prices valid for 14 days from 13 June 2026. Plus 18 percent GST as applicable.</p>
+      </div>
+
+      <div class="price-card feature reveal d1">
+        <h3 style="position:relative;z-index:2">What we are deliberately leaving out</h3>
+        <p style="color:#aebfce;font-size:.9rem;position:relative;z-index:2;margin:8px 0 16px">So this stays a tight, affordable job - not a runaway project.</p>
+        <div class="not-incl" style="position:relative;z-index:2">
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#8ea1b5" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg><span style="color:#cdd9e6">No full rebuild of the app. We secure and extend what you have.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#8ea1b5" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg><span style="color:#cdd9e6">No turning this into a product to sell to other builders yet. That is a separate, later conversation.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#8ea1b5" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg><span style="color:#cdd9e6">No full-time engineers placed on your team. This is fixed-scope work.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#8ea1b5" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg><span style="color:#cdd9e6">Cloud and AI costs are not marked up. You pay the actual bill.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#8ea1b5" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg><span style="color:#cdd9e6">Brand-new modules outside the agreed list are quoted separately, with your sign-off first.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- e-sign -->
+    <div class="esign reveal" id="esign">
+      <div>
+        <h3>Ready to start with the security audit?</h3>
+        <p>Put your name below and I will send the agreement and the week-one plan. The security audit can begin within three working days of sign-off. Nothing new is built until the app is checked.</p>
+      </div>
+      <div class="esign-fields">
+        <input type="text" placeholder="Your name" id="signName">
+        <input type="text" placeholder="For Riseco Infra Private Limited" value="For Riseco Infra Private Limited">
+        <button class="esign-btn" id="signBtn">Approve and send me the agreement</button>
+        <p class="esign-note">This records your intent to proceed. The signed agreement and SOW follow on WhatsApp.</p>
+      </div>
+    </div>
+
+    <details class="reveal" style="margin-top:32px">
+      <summary><span>Full scope line items and assumptions</span><span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+      <div class="body">
+        <ul>
+          <li><b>Security:</b> authentication review, role-based access (director vs site vs office), data-exposure check, secrets handling, input validation, secure hosting configuration, findings report, fixes, one re-test.</li>
+          <li><b>Features:</b> estimate-vs-actual reconciliation hardening, director overrun flagging, drawing and document version history, petty cash / sales / assets polish. Final list locked in week one.</li>
+          <li><b>Assistant:</b> WhatsApp number, conversational queries against live app data, 6 AM all-site brief, real-time alerts, custom skills for Riseco workflows, least-privilege data access, audit logging of every action.</li>
+          <li><b>Hosting:</b> migrate off free tier, server for the assistant, backups, monitoring, go-live - on your own cloud account.</li>
+          <li><b>Assumptions:</b> you provide access to the current app and its hosting, and one point of contact (you or your father) for week-one decisions.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="reveal">
+      <summary><span>For your accounts team: payment schedule, GST and TDS</span><span class="pl">Accounts</span></summary>
+      <div class="body">
+        <ul>
+          <li><b>Build &#8377;3,00,000:</b> 40 percent on signing, 30 percent on delivery of security + features, 30 percent on go-live.</li>
+          <li><b>Maintenance &#8377;15,000/month:</b> billed in advance on the 1st, starting the month after go-live.</li>
+          <li><b>GST:</b> 18 percent added as applicable. SAC 998314.</li>
+          <li><b>TDS:</b> you may deduct TDS at 2 percent under section 194C or 10 percent under section 194J as applicable; please share Form 16A quarterly.</li>
+          <li><b>Cloud / AI:</b> on your own account, paid by you directly. We set it up and keep it tuned for low cost.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ===================== BLOCK 3: RISK + DECISION CRITERIA ===================== -->
+<section class="block" id="decide" data-section="decide">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="label">Before you decide</span>
+      <h2>What could go wrong, and how we have already handled it.</h2>
+    </div>
+    <div class="two-col">
+      <div class="panel reveal">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L3 7v6c0 5 3.5 8 9 9 5.5-1 9-4 9-9V7z"/></svg>What could go wrong</h3>
+        <div class="risk-row"><div class="rq">?</div><div><b>The app turns out to need more than a fix.</b><p>If the audit finds the base needs real rework, we tell you before doing it - it becomes a separate, agreed quote, never silent extra work.</p></div></div>
+        <div class="risk-row"><div class="rq">?</div><div><b>The AI bill creeps up.</b><p>It runs on cheaper models with caching, on your own account, with a monthly cap we agree. You see every rupee and can throttle it any time.</p></div></div>
+        <div class="risk-row"><div class="rq">?</div><div><b>What if Shruti is not available later.</b><p>You own the code, the credentials and a written runbook from day one. Nothing is locked to one person.</p></div></div>
+        <div class="risk-row"><div class="rq">?</div><div><b>What if results miss by the third month.</b><p>The security report and the working WhatsApp brief are concrete checkpoints. If a deliverable is not met, you have it in writing in the SOW.</p></div></div>
+      </div>
+      <div class="panel reveal d1">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>How to judge this offer</h3>
+        <ul class="crit-list">
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></span><div><b>Time to first value</b><span>Security audit starts within three working days. Working WhatsApp brief inside the build window.</span></div></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></span><div><b>You own everything</b><span>Code, credentials, runbook, and the cloud account are all yours. No lock-in.</span></div></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></span><div><b>Transparent pricing</b><span>One build cost, one small monthly, cloud at actual cost. No marked-up usage.</span></div></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></span><div><b>Fixed, not open-ended</b><span>A defined job with a defined number - the thing you said you wanted, not a monthly retainer.</span></div></li>
+          <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></span><div><b>A clear exit</b><span>Stop maintenance any time with 30 days notice. You keep the running system.</span></div></li>
+        </ul>
+        <a class="sow-link" href="sow.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>Read the full Statement of Work (legal terms, deliverables, acceptance)</a>
+      </div>
+    </div>
+
+    <details class="reveal" style="margin-top:24px">
+      <summary><span>For your father / the directors: the full risk register and security notes</span><span class="pl">Directors</span></summary>
+      <div class="body">
+        <ul>
+          <li><b>Access control:</b> role-based - directors see all sites and finances; site staff see only their site. Every change is logged.</li>
+          <li><b>Assistant safety:</b> the WhatsApp assistant gets least-privilege, read-first access to the app, and every action it takes is recorded in an audit log you can review.</li>
+          <li><b>Data:</b> drawings, financials and vendor details stay on your own cloud account, not ours.</li>
+          <li><b>Continuity:</b> code in your repository, credentials in your vault, a runbook PDF, and a two-hour handover call. The system survives any change of vendor.</li>
+          <li><b>Liability:</b> capped at the fees paid in the last three months, per the SOW. Jurisdiction Pune.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ===================== BLOCK 4: PROOF ===================== -->
+<section class="block alt" id="proof" data-section="proof">
+  <div class="container">
+    <div class="sec-head reveal" style="text-align:center;margin:0 auto 40px;max-width:60ch">
+      <span class="label" style="display:block;text-align:center">Why us</span>
+      <h2>We do not pitch AI agents. We run them.</h2>
+    </div>
+    <div class="proof-card reveal">
+      <div class="qmark">"</div>
+      <span class="proof-tag">What we already build and operate</span>
+      <h3>Daily WhatsApp briefs and scheduled business reports - already live, every morning.</h3>
+      <p>The exact thing you asked for - a 6 AM message that pulls a system's live status, the open alerts, and the day's actions, and delivers it to WhatsApp - is something we already build and run, every day, on a schedule, without anyone touching it. In our meeting we showed you one live: a system reporting its own status on a timer, connected to its data, formatted and sent on its own.</p>
+      <p>So this is not a first attempt or a research project. The morning-brief assistant, the alerting, the scheduled reports - that is our day-to-day work. For you we point the same machinery at Riseco's sites, your indents, your estimate-vs-actual, and your drawings.</p>
+      <div class="proof-points">
+        <div class="pp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><b>Scheduled, hands-off</b><span>Reports and briefs that fire on a timer and deliver themselves.</span></div>
+        <div class="pp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><b>WhatsApp-native</b><span>Delivered where you already read, no new app to learn.</span></div>
+        <div class="pp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L3 7v6c0 5 3.5 8 9 9 5.5-1 9-4 9-9V7z"/><path d="M9 12l2 2 4-4"/></svg><b>Security first</b><span>We secure the system before we put an agent on top of it.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BLOCK 5: WHAT HAPPENS NEXT ===================== -->
+<section class="block" id="next" data-section="next">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="label">What happens next</span>
+      <h2>From sign-off to your first 6 AM brief.</h2>
+      <p class="lead">A clear path, security first, with you signing off the feature list before any new code is written.</p>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="tl-step"><div class="tl-when">Days 1-3<small>after sign-off</small></div><div class="tl-what"><b>Access and kickoff</b><p>You give us the app and hosting access. We agree the exact feature list and lock the security scope. The audit begins.</p></div></div>
+      <div class="tl-step"><div class="tl-when">Week 1-2<small>security first</small></div><div class="tl-what"><b>Security audit and hardening</b><p>We check access, logins, data exposure and hosting, fix the gaps, add role-based access, and hand you the findings report. Nothing new is built until this is done.</p></div></div>
+      <div class="tl-step"><div class="tl-when">Week 3-5<small>build</small></div><div class="tl-what"><b>Features and the assistant</b><p>We sharpen the reconciliation and flagging, tidy the document and petty-cash screens, and build Riseco Assistant - the WhatsApp queries, alerts, and the 6 AM brief.</p></div></div>
+      <div class="tl-step"><div class="tl-when">Week 6<small>go-live</small></div><div class="tl-what"><b>Hosting, go-live and handover</b><p>We move it to proper hosting on your account, run final security re-test, switch on the assistant, and hand over the runbook on a two-hour call. Your first 6 AM brief arrives the next morning.</p></div></div>
+    </div>
+
+    <h3 style="margin:48px 0 4px">What you own at the end</h3>
+    <div class="own-grid">
+      <div class="own-card reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg><div><b>The code</b><span>Your repository, your account. All of it.</span></div></div>
+      <div class="own-card reveal d1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><div><b>The credentials</b><span>Logins and keys in your own vault.</span></div></div>
+      <div class="own-card reveal d2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><div><b>The runbook</b><span>A written guide to run and change it.</span></div></div>
+      <div class="own-card reveal d3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><div><b>A 2-hour handover</b><span>A walkthrough call so you and your team can run it.</span></div></div>
+    </div>
+
+    <h3 style="margin:48px 0 4px">A quick read for everyone who needs to approve this</h3>
+    <table class="stake-table reveal">
+      <thead><tr><th>If you are the</th><th>What is in it for you</th><th>Where to look</th></tr></thead>
+      <tbody>
+        <tr><td>Managing Director (Neeraj)</td><td>The business reaches you at 6 AM - sites, alerts, decisions - without opening a screen.</td><td><a href="#demo">See the demo</a></td></tr>
+        <tr><td>Director (Murlidhar)</td><td>Overruns get flagged to you the moment they happen, with a clear access trail.</td><td><a href="#decide">Risk and access</a></td></tr>
+        <tr><td>Accounts</td><td>Fixed build, small monthly, GST and TDS handled cleanly, cloud at actual cost.</td><td><a href="#scope">Pricing and terms</a></td></tr>
+        <tr><td>Site engineers</td><td>Ask for indent status or site spend on WhatsApp instead of chasing the office.</td><td><a href="#demo">Try a question</a></td></tr>
+        <tr><td>Whoever signs</td><td>Clear deliverables, your ownership of everything, a 30-day exit. All in the SOW.</td><td><a href="sow.html" target="_blank" rel="noopener">Read the SOW</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== BLOCK 6: FINAL CTA ===================== -->
+<section class="block dark" id="cta" data-section="cta" style="background:radial-gradient(1000px 600px at 50% 0%,#16314a,var(--primary) 55%,var(--primary-dark))">
+  <div class="container">
+    <div class="final-cta reveal">
+      <h2>Start with the audit. Decide the rest after you see it.</h2>
+      <p>The smallest, safest first step is the security check on the app you already built. Once that is done and you have seen the assistant working, the features and go-live follow. Message me and we will set the kickoff.</p>
+      <div class="cta-row2">
+        <a class="cta-primary" href="https://wa.me/919673758777?text=Hi%20Shruti%2C%20I%27m%20ready%20to%20start%20with%20the%20Riseco%20security%20audit.">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 14.2c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1.1 2.8 1.2 3c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.5.3-.7.3-1.4.2-1.5-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.1-1.3c1.4.8 3.1 1.3 4.9 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+          WhatsApp Shruti now
+        </a>
+        <a class="cta-ghost" href="sow.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Read the Statement of Work</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="fl">Tranquil Veda Private Limited - brand Jarvis Daily</div>
+    <div>Prepared by Shruti - shruti@jarvisdaily.com - +91 9673758777 - Pune, Maharashtra - GSTIN 27AAHCT6956C1Z3</div>
+    <div class="meta">Proposal for Riseco Infra Private Limited. Confidential. Valid until 27 June 2026. Version 1.0, 13 June 2026.</div>
+  </div>
+</footer>
+
+<script>
+/* ---------- constellation hero ---------- */
+(function(){
+  var c=document.getElementById('constellation'); if(!c)return;
+  var ctx=c.getContext('2d'),w,h,pts,DPR=Math.min(window.devicePixelRatio||1,2);
+  function size(){w=c.clientWidth;h=c.clientHeight;c.width=w*DPR;c.height=h*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+    var n=Math.min(70,Math.floor(w*h/16000));pts=[];for(var i=0;i<n;i++){pts.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25});}}
+  function tick(){ctx.clearRect(0,0,w,h);
+    for(var i=0;i<pts.length;i++){var p=pts[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,1.6,0,6.283);ctx.fillStyle='rgba(0,230,118,.7)';ctx.fill();}
+    for(var a=0;a<pts.length;a++){for(var b=a+1;b<pts.length;b++){var dx=pts[a].x-pts[b].x,dy=pts[a].y-pts[b].y,d=dx*dx+dy*dy;
+      if(d<13000){ctx.beginPath();ctx.moveTo(pts[a].x,pts[a].y);ctx.lineTo(pts[b].x,pts[b].y);ctx.strokeStyle='rgba(0,200,83,'+(.16*(1-d/13000))+')';ctx.lineWidth=1;ctx.stroke();}}}
+    requestAnimationFrame(tick);}
+  size();tick();window.addEventListener('resize',size);
+})();
+
+/* ---------- scroll reveal ---------- */
+(function(){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+})();
+
+/* ---------- e-sign acknowledgement ---------- */
+(function(){
+  var b=document.getElementById('signBtn'),n=document.getElementById('signName');if(!b)return;
+  b.addEventListener('click',function(){
+    var name=(n.value||'').trim();
+    var txt=name?('Hi Shruti, this is '+name+'. I approve the Riseco Infra plan - please send the agreement and SOW.'):'Hi Shruti, I approve the Riseco Infra plan - please send the agreement and SOW.';
+    window.open('https://wa.me/919673758777?text='+encodeURIComponent(txt),'_blank');
+  });
+})();
+
+/* ---------- 30-day auto-expiry ---------- */
+(function(){
+  var meta=document.querySelector('meta[name="data-published"]');if(!meta)return;
+  var pub=new Date(meta.content+'T00:00:00'),now=new Date(),days=(now-pub)/86400000;
+  if(days>30){document.body.innerHTML='<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;background:#0A1628;color:#aebfce;text-align:center;padding:40px"><div><h1 style="color:#fff;font-size:2rem;margin-bottom:12px">This proposal link has expired</h1><p>Please contact Shruti on WhatsApp at +91 9673758777 for a current version.</p></div></div>';}
+})();
+
+/* ---------- INTERACTIVE WHATSAPP ASSISTANT DEMO ---------- */
+(function(){
+  var body=document.getElementById('waBody'),typing=document.getElementById('typing'),
+      chipsWrap=document.getElementById('chips'),input=document.getElementById('waInput'),send=document.getElementById('waSend');
+  if(!body)return;
+
+  function now(){return '6:0'+Math.floor(Math.random()*9)+' AM';}
+  function scroll(){body.scrollTop=body.scrollHeight;}
+  function addUser(text){
+    var d=document.createElement('div');d.className='bub out';d.innerHTML=text+'<span class="t">'+now()+'</span>';
+    body.appendChild(d);scroll();
+  }
+  function addBot(html){
+    var d=document.createElement('div');d.className='bub in';d.innerHTML=html+'<span class="t">'+now()+'</span>';
+    body.appendChild(d);scroll();
+  }
+  function botReply(html){
+    typing.classList.add('show');scroll();
+    setTimeout(function(){typing.classList.remove('show');addBot(html);},1100);
+  }
+
+  var R={
+    brief:'<b>Riseco - 6 AM brief - Fri 13 Jun</b><div class="mini">'
+      +'<div class="row"><span>Crown Greens, Hinjewadi</span><span class="v ok">On track</span></div>'
+      +'<div class="row"><span>Navyangan Ph II, Pirangut</span><span class="v warn">Watch</span></div>'
+      +'<div class="row"><span>Cornerstone, FC Road</span><span class="v ok">On track</span></div>'
+      +'</div><div class="flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>1 budget flag - Navyangan steel over estimate</div>'
+      +'<div style="margin-top:8px">Your 3 for today: approve the Navyangan steel variance, sign 2 indents waiting since yesterday, and the Cornerstone slab pour is scheduled. Want the detail on any?</div>',
+    alert:'<b>Budget alerts - open</b><div class="mini">'
+      +'<div class="row"><span>Navyangan - steel</span><span class="v bad">+8.2% over</span></div>'
+      +'<div class="row"><span>Estimate</span><span class="v">&#8377;14,80,000</span></div>'
+      +'<div class="row"><span>Actual to date</span><span class="v bad">&#8377;16,01,000</span></div>'
+      +'</div><div class="flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>Flagged to directors at 5:42 AM</div>'
+      +'<div style="margin-top:8px">Cause: last steel indent priced above the year rate. Reply <b>approve</b> to clear it, or <b>hold</b> to ask the site for a revised rate.</div>',
+    indent:'<b>Indents - Crown Greens</b><div class="mini">'
+      +'<div class="row"><span>IND-0241 cement</span><span class="v ok">Approved</span></div>'
+      +'<div class="row"><span>IND-0242 shuttering ply</span><span class="v warn">Awaiting you</span></div>'
+      +'<div class="row"><span>IND-0243 binding wire</span><span class="v ok">Within estimate</span></div>'
+      +'</div><div style="margin-top:8px">IND-0242 is &#8377;62,400, inside the Crown Greens estimate. Reply <b>approve 0242</b> and I will mark it and notify the site.</div>',
+    petty:'<b>Petty cash - this week</b><div class="mini">'
+      +'<div class="row"><span>Opening</span><span class="v">&#8377;40,000</span></div>'
+      +'<div class="row"><span>Spent (3 sites)</span><span class="v warn">&#8377;27,350</span></div>'
+      +'<div class="row"><span>Balance</span><span class="v ok">&#8377;12,650</span></div>'
+      +'</div><div style="margin-top:8px">Biggest item: &#8377;9,800 site transport at Navyangan. Two vouchers are missing receipts - want me to message the site supervisors?</div>',
+    docs:'<b>Drawings - latest uploads</b><div class="mini">'
+      +'<div class="row"><span>Cornerstone slab L4</span><span class="v ok">Rev C, today 8:10</span></div>'
+      +'<div class="row"><span>Crown Greens MEP</span><span class="v ok">Rev B, 11 Jun</span></div>'
+      +'</div><div style="margin-top:8px">Rev C of the Cornerstone slab supersedes Rev B from Tuesday. Both are timestamped and kept. Want the link, or a note sent to the site that Rev C is now current?</div>',
+    fallback:'I can pull your 6 AM brief, open budget alerts, indent status, petty cash, drawings, or site spend - all live from your app once we are connected. Tap a suggestion below, or ask in your own words.'
+  };
+
+  var chips=[
+    {l:'Today\'s 6 AM brief',k:'brief'},
+    {l:'Any budget alerts?',k:'alert'},
+    {l:'Indent status - Crown Greens',k:'indent'},
+    {l:'Petty cash this week',k:'petty'},
+    {l:'Latest drawings',k:'docs'}
+  ];
+  var labels={brief:'Show me today\'s 6 AM brief',alert:'Any budget alerts?',indent:'Indent status for Crown Greens',petty:'Petty cash this week?',docs:'Latest drawings uploaded?'};
+
+  chips.forEach(function(ch){
+    var b=document.createElement('button');b.className='chip';b.textContent=ch.l;
+    b.addEventListener('click',function(){ ask(ch.k,labels[ch.k]||ch.l); });
+    chipsWrap.appendChild(b);
+  });
+
+  function classify(text){
+    var t=text.toLowerCase();
+    if(/brief|morning|6 ?am|today|summary|update/.test(t))return'brief';
+    if(/alert|over|budget|flag|overrun|exceed/.test(t))return'alert';
+    if(/indent|crown|order|po\b|material/.test(t))return'indent';
+    if(/petty|cash|expense|voucher/.test(t))return'petty';
+    if(/draw|doc|drawing|document|revision|rev /.test(t))return'docs';
+    return'fallback';
+  }
+  function ask(key,userText){ addUser(userText); botReply(R[key]||R.fallback); }
+
+  function submit(){
+    var v=(input.value||'').trim();if(!v)return;input.value='';
+    addUser(v);botReply(R[classify(v)]);
+  }
+  send.addEventListener('click',submit);
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')submit();});
+})();
+</script>
+</body>
+</html>
