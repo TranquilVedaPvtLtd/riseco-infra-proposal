@@ -382,13 +382,13 @@
         <div class="demo-copy">
           <span class="label">See it working</span>
           <h2>Talk to Riseco Assistant.</h2>
-          <p>This is a working preview of the WhatsApp assistant. Tap a question below the chat, or type your own. It answers exactly the way the real one will, against your sites and your numbers.</p>
+          <p>This is a working preview of the WhatsApp assistant. It runs through a few real questions on its own - tap any question or type your own at any time to take over. It answers exactly the way the real one will, against your sites and your numbers.</p>
           <ul class="demo-list">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b style="color:#fff">6 AM brief</b> - all sites, today's priorities, and open flags in one message.</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg><span><b style="color:#fff">Instant alerts</b> - the second a cost crosses its estimate, you know.</span></li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span><b style="color:#fff">Just ask</b> - indent status, petty cash, site spend, in plain language.</span></li>
           </ul>
-          <div class="demo-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Tap a suggestion under the chat to start</div>
+          <div class="demo-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Running live - type any time to take over</div>
         </div>
 
         <div class="phone">
@@ -400,7 +400,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
             </div>
             <div class="wa-body" id="waBody">
-              <div class="bub in">Good morning Neeraj. I am set up for Riseco Infra. Ask me anything, or tap a question below to see how I work.<span class="t">6:00 AM</span></div>
+              <div class="bub in">Good morning Neeraj. This is Riseco Assistant - here is your business this morning.<span class="t">6:00 AM</span></div>
             </div>
             <div class="typing" id="typing"><span></span><span></span><span></span></div>
             <div class="wa-foot">
@@ -430,14 +430,10 @@
           <div class="n">Monthly maintenance<small>Monitoring, fixes, small changes, keeping it live</small></div>
           <div class="amt">&#8377;15,000<small style="text-align:right">per month</small></div>
         </div>
-        <div class="price-line">
-          <div class="n">Cloud + AI usage<small>Hosting and the assistant's AI calls, billed at cost on your own account</small></div>
-          <div class="amt">&#8377;6k-12k<small style="text-align:right">per month, your bill</small></div>
-        </div>
         <div class="why-price">
-          <b>Why this price.</b> The build covers a real security pass, feature work, and a custom WhatsApp assistant wired into your app - priced as one fixed job, not a monthly you did not ask for. The AI runs on cheaper models with caching, so the running bill stays in the low thousands, not lakhs, and it is on your account so you see every rupee.
+          <b>Why this price.</b> The build covers a real security pass, feature work, and a custom WhatsApp assistant wired into your app - priced as one fixed job, not a monthly you did not ask for. You own the code, the credentials and the runbook at the end, with no lock-in.
         </div>
-        <p class="validity">Prices valid for 14 days from 13 June 2026. Plus 18 percent GST as applicable.</p>
+        <p class="validity">Cloud, server and API keys are billed at actual cost. Prices valid for 14 days from 13 June 2026. Plus 18 percent GST as applicable.</p>
       </div>
 
       <div class="price-card feature reveal d1">
@@ -670,6 +666,9 @@
       chipsWrap=document.getElementById('chips'),input=document.getElementById('waInput'),send=document.getElementById('waSend');
   if(!body)return;
 
+  var auto=true, autoTimers=[];
+  function clearTimers(){autoTimers.forEach(clearTimeout);autoTimers=[];}
+  function stopAuto(){auto=false;clearTimers();typing.classList.remove('show');}
   function now(){return '6:0'+Math.floor(Math.random()*9)+' AM';}
   function scroll(){body.scrollTop=body.scrollHeight;}
   function addUser(text){
@@ -680,9 +679,10 @@
     var d=document.createElement('div');d.className='bub in';d.innerHTML=html+'<span class="t">'+now()+'</span>';
     body.appendChild(d);scroll();
   }
-  function botReply(html){
+  function botReply(html,cb){
     typing.classList.add('show');scroll();
-    setTimeout(function(){typing.classList.remove('show');addBot(html);},1100);
+    var t=setTimeout(function(){typing.classList.remove('show');addBot(html);if(cb)cb();},1100);
+    autoTimers.push(t);
   }
 
   var R={
@@ -726,7 +726,7 @@
 
   chips.forEach(function(ch){
     var b=document.createElement('button');b.className='chip';b.textContent=ch.l;
-    b.addEventListener('click',function(){ ask(ch.k,labels[ch.k]||ch.l); });
+    b.addEventListener('click',function(){ stopAuto(); ask(ch.k,labels[ch.k]||ch.l); });
     chipsWrap.appendChild(b);
   });
 
@@ -743,10 +743,33 @@
 
   function submit(){
     var v=(input.value||'').trim();if(!v)return;input.value='';
-    addUser(v);botReply(R[classify(v)]);
+    stopAuto();addUser(v);botReply(R[classify(v)]);
   }
   send.addEventListener('click',submit);
   input.addEventListener('keydown',function(e){if(e.key==='Enter')submit();});
+  input.addEventListener('focus',stopAuto);
+
+  /* auto-play a scripted conversation when the demo scrolls into view */
+  var seq=['brief','alert','indent'];
+  function playStep(i){
+    if(!auto||i>=seq.length)return;
+    addUser(labels[seq[i]]);
+    botReply(R[seq[i]],function(){
+      var t=setTimeout(function(){playStep(i+1);},1900);autoTimers.push(t);
+    });
+  }
+  var started=false;
+  function kickoff(){ if(started)return; started=true; var t=setTimeout(function(){if(auto)playStep(0);},1300); autoTimers.push(t); }
+  var dio=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting) kickoff(); });
+  },{threshold:.15});
+  dio.observe(document.getElementById('demo')||body);
+  /* safety net: if already on-screen at load, or observer is slow, start anyway */
+  setTimeout(function(){
+    var el=document.getElementById('demo'); if(!el)return;
+    var r=el.getBoundingClientRect();
+    if(r.top < (window.innerHeight||800) && r.bottom > 0) kickoff();
+  },2500);
 })();
 </script>
 </body>
